@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airport Transfers - Test</title>
+    <link rel="manifest" href="/manifest.json">
+</head>
+
+<body>
+    <header>
+        <h1>Test API Connection - Add Numbers</h1>
+        <p>Click the button below to test adding numbers using the backend API.</p>
+    </header>
+
+    <main>
+        <button id="addNumbersButton">Add Numbers (5 + 10)</button>
+        <div id="info"></div>
+    </main>
+
+    <script>
+        // Register the service worker for PWA capabilities
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+                console.log('Service Worker registered with scope:', registration.scope);
+            }).catch(function(error) {
+                console.log('Service Worker registration failed:', error);
+            });
+        }
+
+        document.getElementById("addNumbersButton").addEventListener("click", () => {
+            // Make request to backend to add numbers
+            fetch('https://airport-transfers.onrender.com/function', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    Function: 'add_numbers',
+                    Params: { a: 5, b: 10 }
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById("info").innerHTML = `Error: ${data.error}`;
+                } else {
+                    document.getElementById("info").innerHTML = `Result: ${data.result}`;
+                }
+            })
+            .catch(error => {
+                document.getElementById("info").innerHTML = `Error: ${error.message}`;
+            });
+        });
+    </script>
+</body>
+
+</html>
